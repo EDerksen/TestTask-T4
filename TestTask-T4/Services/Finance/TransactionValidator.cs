@@ -33,6 +33,25 @@ namespace TestTask_T4.Services.Finance
             }
         }
 
+        public void ValidateDuplicatingTransaction(ITransaction transaction, FinancialTransaction existingTransaction)
+        {
+            if(transaction is DebitTransaction
+                && existingTransaction.Type != FinancialTransactionType.Debit)
+            {
+                throw new FinancialException("Duplicating transaction", "Transaction with the same id already exists");
+            }
+            else if (transaction is CreditTransaction
+                && existingTransaction.Type != FinancialTransactionType.Credit)
+            {
+                throw new FinancialException("Duplicating transaction", "Transaction with the same id already exists");
+            }
+            else if (transaction.ClientId != existingTransaction.ClientId
+                    || transaction.Amount != existingTransaction.Amount)
+            {
+                throw new FinancialException("Duplicating transaction", "Transaction with the same id already exists");
+            }
+        }
+
         private void ValidateCreditTransaction(CreditTransaction creditTransaction)
         {
             if (creditTransaction.Amount <= 0)

@@ -25,6 +25,8 @@ public class FinanceController : ControllerBase
     [HttpGet]
     [Route("balance")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
     public async Task<ClientBalanceResponse> GetBalance([FromQuery]Guid id, CancellationToken cancellationToken)
     {
         var clientBalance = await _clientsService.GetClientBalance(id, cancellationToken);
@@ -34,6 +36,8 @@ public class FinanceController : ControllerBase
     [HttpPost]
     [Route("credit")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
     public async Task<TransactionRespose> Credit([FromBody] CreditTransactionRequest request, CancellationToken cancellationToken)
     {
         var transaction = request.ToTransaction();
@@ -46,6 +50,8 @@ public class FinanceController : ControllerBase
     [HttpPost]
     [Route("debit")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
     public async Task<TransactionRespose> Credit([FromBody] DebitTransactionRequest request, CancellationToken cancellationToken)
     {
         var transaction = request.ToTransaction();
@@ -58,6 +64,8 @@ public class FinanceController : ControllerBase
     [HttpPost]
     [Route("revert")]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json")]
     public async Task<RevertTransactionResponse> Revert([FromQuery] Guid id, CancellationToken cancellationToken)
     {
         var result = await _financeService.RevertTransaction(id, cancellationToken);

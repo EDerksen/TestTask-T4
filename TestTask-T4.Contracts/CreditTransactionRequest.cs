@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using TestTask_T4.Contracts.Converters;
 
 namespace TestTask_T4.Contracts
 {
@@ -25,6 +26,7 @@ namespace TestTask_T4.Contracts
         [Required]
         [JsonPropertyName("amount")]
         [Range(0, 9999999999999999.99)]
+        [JsonConverter(typeof(FinancePrecisionConverter))]
         public decimal Amount { get; init; }
     }
 }

@@ -34,6 +34,7 @@ namespace TestTask_T4.Services.Finance
             var existingTransaction = await FindTransaction(transaction.Id, cancellationToken);
             if (existingTransaction != null)
             {
+                _transactionValidator.ValidateDuplicatingTransaction(transaction, existingTransaction);
                 return new TransactionResult()
                 {
                     ClientBalance = existingTransaction.BalanceSnapshot.Balance,
@@ -45,7 +46,6 @@ namespace TestTask_T4.Services.Finance
 
             var result = await ProcessClientTransaction(transaction, cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
             await dbTransaction.CommitAsync();
 
             return result;
@@ -90,7 +90,7 @@ namespace TestTask_T4.Services.Finance
             var client = await _clientsService.GetClientForUpdate(transaction.ClientId);
 
             _transactionValidator.ValidateClientTransaction(transaction, client);
-            return ApplyTransaction(transaction, client, cancellationToken);
+            return await ApplyTransaction(transaction, client, cancellationToken);
         }
 
         private ITransaction GetCompensatoryTransaction(FinancialTransaction financialTransaction)
@@ -108,7 +108,7 @@ namespace TestTask_T4.Services.Finance
             return new CreditTransaction
             {
                 Id = Guid.NewGuid(),
-                ClientId = financialTransaction.Client.Id,
+                ClientId = financialTransaction.ClientId,
                 DateTime = _timeProvider.GetUtcNow().UtcDateTime,
                 Amount = financialTransaction.Amount
             };
@@ -119,7 +119,7 @@ namespace TestTask_T4.Services.Finance
             return new DebitTransaction
             {
                 Id = Guid.NewGuid(),
-                ClientId = financialTransaction.Client.Id,
+                ClientId = financialTransaction.ClientId,
                 DateTime = _timeProvider.GetUtcNow().UtcDateTime,
                 Amount = financialTransaction.Amount
             };
@@ -140,17 +140,24 @@ namespace TestTask_T4.Services.Finance
                 .SingleOrDefaultAsync(cancellationToken);
         }
 
-        private TransactionResult ApplyTransaction(ITransaction transaction, Client client, CancellationToken cancellationToken = default)
+        private async Task<TransactionResult> ApplyTransaction(ITransaction transaction, Client client, CancellationToken cancellationToken = default)
         {
-            return transaction switch
+            var financialTransaction = transaction switch
             {
                 DebitTransaction debitTransaction => ApplyDebitTransaction(debitTransaction, client),
                 CreditTransaction creditTransaction => ApplyCreditTransaction(creditTransaction, client),
                 _ => throw new FinancialException("Unknown transaction type", $"Unknown transaction type:{transaction.GetType().Name}")
             };
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return new TransactionResult()
+            {
+                ClientBalance = client.Balance,
+                InsertDateTime = financialTransaction.CreatedAt
+            };
         }
 
-        private TransactionResult ApplyDebitTransaction(DebitTransaction debitTransaction, Client client)
+        private FinancialTransaction ApplyDebitTransaction(DebitTransaction debitTransaction, Client client)
         {
             var newBalance = client.Balance - debitTransaction.Amount;
             var financialTransaction = new FinancialTransaction
@@ -169,14 +176,10 @@ namespace TestTask_T4.Services.Finance
             client.Balance = newBalance;
             _dbContext.Add(financialTransaction);
 
-            return new TransactionResult()
-            {
-                ClientBalance = client.Balance,
-                InsertDateTime = financialTransaction.CreatedAt
-            };
+            return financialTransaction;
         }
 
-        private TransactionResult ApplyCreditTransaction(CreditTransaction creditTransaction, Client client)
+        private FinancialTransaction ApplyCreditTransaction(CreditTransaction creditTransaction, Client client)
         {
             var newBalance = client.Balance + creditTransaction.Amount;
             var financialTransaction = new FinancialTransaction
@@ -195,11 +198,7 @@ namespace TestTask_T4.Services.Finance
             client.Balance = newBalance;
             _dbContext.Add(financialTransaction);
 
-            return new TransactionResult()
-            {
-                ClientBalance = client.Balance,
-                InsertDateTime = financialTransaction.CreatedAt
-            };
+            return financialTransaction;
         }
     }
 }

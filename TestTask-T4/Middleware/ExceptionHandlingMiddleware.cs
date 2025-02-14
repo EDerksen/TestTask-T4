@@ -8,11 +8,13 @@ namespace TestTask_T4.Middleware
 {
     public class ExceptionHandlingMiddleware
     {
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
         private readonly RequestDelegate _next;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -23,6 +25,7 @@ namespace TestTask_T4.Middleware
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Unhalded exception occured while processing request");
                 await HandleExceptionAsync(context, ex);
             }
         }

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTask-T4.AppHost", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTask-T4.ServiceDefaults", "TestTask-T4.ServiceDefaults\TestTask-T4.ServiceDefaults.csproj", "{BA3C149C-4DE5-4D5A-A5A2-A95CC990D4F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTask-T4.Contracts", "TestTask-T4.Contracts\TestTask-T4.Contracts.csproj", "{4A3CAA8D-29C3-4AC0-BF09-1C2AC51F8285}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BA3C149C-4DE5-4D5A-A5A2-A95CC990D4F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA3C149C-4DE5-4D5A-A5A2-A95CC990D4F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA3C149C-4DE5-4D5A-A5A2-A95CC990D4F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A3CAA8D-29C3-4AC0-BF09-1C2AC51F8285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A3CAA8D-29C3-4AC0-BF09-1C2AC51F8285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A3CAA8D-29C3-4AC0-BF09-1C2AC51F8285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A3CAA8D-29C3-4AC0-BF09-1C2AC51F8285}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

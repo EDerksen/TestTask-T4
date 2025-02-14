@@ -8,9 +8,9 @@
 - При создании транзакциям добавляется BalanceSnapshot, чтобы хранить состояние баланса на случай повторного запроса
 - Валидация и обработка ошибок реализована с помощью атрибутов на контрактах и через исключения [TestTask-T4/Exceptions](TestTask-T4/Exceptions) и их обработку в middleware [TestTask-T4/Middleware/ExceptionHandlingMiddleware.cs](TestTask-T4/Middleware/ExceptionHandlingMiddleware.cs)
 
-Для удобства добавил в проект Aspire
-Для запуска потребуется Docker Desktop (из-за постгреса)
-Запускать можно из студии через проект TestTask-T4.AppHost либо из консоли:
+Для удобства добавил в проект Aspire  
+Для запуска потребуется Docker Desktop (из-за постгреса)  
+Запускать можно из студии через проект TestTask-T4.AppHost либо из консоли:  
 ```
 cd TestTask-T4.AppHost
 dotnet run

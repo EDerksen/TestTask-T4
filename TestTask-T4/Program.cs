@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TestTask_T4.Data;
+using TestTask_T4.Services.Clients;
+using TestTask_T4.Services.Finance;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<FinanceDbContext>(opt =>
     opt.UseNpgsql(
         builder.Configuration.GetConnectionString("FinanceDB")));
+
+builder.Services.AddScoped<IFinanceService, FinanceService>();
+builder.Services.AddScoped<IClientsService, ClientsService>();
+builder.Services.AddTransient<ITransactionValidator, TransactionValidator>();
 
 var app = builder.Build();
 

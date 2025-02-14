@@ -1,0 +1,30 @@
+@hostname=localhost
+@port=7042
+
+POST https://{{hostname}}:{{port}}/credit
+Content-Type: application/json
+{
+  "id":"8f0452b2-867b-4ef8-9a9d-3c9c03d9afdf",
+  "clientId": "cfaa0d3f-7fea-4423-9f69-ebff826e2f89",
+  "dateTime":"2019-04-02T13:10:20.0263632+03:00",
+  "amount":23.05
+}
+
+###
+
+POST https://{{hostname}}:{{port}}/debit
+Content-Type: application/json
+{
+  "id":"05eb235c-4955-4c16-bcdd-34e8178228de",
+  "clientId": "cfaa0d3f-7fea-4423-9f69-ebff826e2f89",
+  "dateTime":"2019-04-02T13:10:25.0263632+03:00",
+  "amount":23.05
+}
+
+###
+
+POST https://{{hostname}}:{{port}}/revert?id=05eb235c-4955-4c16-bcdd-34e8178228de
+
+###
+
+GET https://{{hostname}}:{{port}}/balance?id=cfaa0d3f-7fea-4423-9f69-ebff826e2f89

@@ -27,5 +27,7 @@ namespace TestTask_T4.Model
         public decimal Amount { get; set; }
         public FinancialTransactionType Type { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        public Guid? RevertTransactionId { get; set; }
     }
 }

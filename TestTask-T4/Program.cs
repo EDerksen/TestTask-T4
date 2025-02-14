@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TestTask_T4.Data;
+using TestTask_T4.Middleware;
 using TestTask_T4.Services.Clients;
 using TestTask_T4.Services.Finance;
 
@@ -10,6 +11,7 @@ builder.AddServiceDefaults();
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,8 +23,12 @@ builder.Services.AddDbContext<FinanceDbContext>(opt =>
 builder.Services.AddScoped<IFinanceService, FinanceService>();
 builder.Services.AddScoped<IClientsService, ClientsService>();
 builder.Services.AddTransient<ITransactionValidator, TransactionValidator>();
+builder.Services.AddSingleton<TimeProvider>(TimeProvider.System);
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 
 app.MapDefaultEndpoints();
 

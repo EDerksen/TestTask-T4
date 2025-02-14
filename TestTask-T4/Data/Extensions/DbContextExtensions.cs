@@ -21,9 +21,6 @@ namespace TestTask_T4.Data.Extensions
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public static void SetUpdatedAt<Tdb>(this Tdb context) where Tdb : DbContext
         {
             var modifiedEntities = context.ChangeTracker.Entries().Where(p => p.State == EntityState.Modified);

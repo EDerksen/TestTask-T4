@@ -1,12 +1,25 @@
 ﻿using TestTask_T4.Contracts;
+using TestTask_T4.Exceptions;
 using TestTask_T4.Model;
 
 namespace TestTask_T4.Services.Finance
 {
     public class TransactionValidator : ITransactionValidator
     {
+        private readonly TimeProvider _timeProvider;
+
+        public TransactionValidator(TimeProvider timeProvider)
+        {
+            _timeProvider = timeProvider;
+        }
+
         public void ValidateClientTransaction(ITransaction transaction, Client client)
         {
+            if (transaction.DateTime > _timeProvider.GetUtcNow())
+            {
+                throw new FinancialException("Invalid transaction date", $"Transaction date ({transaction.DateTime}) can not be in the future");
+            }
+
             switch (transaction)
             {
                 case DebitTransaction debitTransaction:
@@ -16,7 +29,7 @@ namespace TestTask_T4.Services.Finance
                     ValidateCreditTransaction(creditTransaction);
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid transaction type");
+                    throw new FinancialException("Unknown transaction type", $"Unknown transaction type:{transaction.GetType().Name}");
             }
         }
 
@@ -24,7 +37,7 @@ namespace TestTask_T4.Services.Finance
         {
             if (creditTransaction.Amount <= 0)
             {
-                throw new InvalidOperationException("Invalid credit amount");
+                throw new FinancialException("Invalid transaction amount", $"Credit transaction amount ({creditTransaction.Amount}) can not be less or equal to zero");
             }
         }
 
@@ -32,7 +45,7 @@ namespace TestTask_T4.Services.Finance
         {
             if (debitTransaction.Amount > client.Balance)
             {
-                throw new InvalidOperationException("Insufficient funds");
+                throw new FinancialException("Insufficient funds", $"Debit transaction amount ({debitTransaction.Amount}) is higher than the client balance ({client.Balance})");
             }
         }
     }

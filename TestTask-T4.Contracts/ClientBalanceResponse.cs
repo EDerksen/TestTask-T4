@@ -2,10 +2,10 @@
 
 namespace TestTask_T4.Contracts
 {
-    public record CLientBalanceResponse
+    public record ClientBalanceResponse
     {
         [JsonPropertyName("balanceDateTime")]
-        public DateTimeOffset BalanceDateTime { get; init; }
+        public DateTime BalanceDateTime { get; init; }
 
         [JsonPropertyName("clientBalance")]
         public decimal Balance { get; init; }

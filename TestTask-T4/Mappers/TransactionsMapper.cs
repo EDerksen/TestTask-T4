@@ -10,6 +10,7 @@ namespace TestTask_T4.Mappers
         public static partial CreditTransaction ToTransaction(this CreditTransactionRequest creditTransactionRequest);
         public static partial DebitTransaction ToTransaction(this DebitTransactionRequest debitTransactionRequest);
         public static partial TransactionRespose ToResponse(this TransactionResult transactionResult);
+        public static partial RevertTransactionResponse ToResponse(this RevertTransactionResult transactionResult);
 
         public static DateTime ToDateTime(this DateTimeOffset dateTimeOffset)
         {

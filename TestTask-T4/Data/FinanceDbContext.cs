@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TestTask_T4.Data.Extensions;
 using TestTask_T4.Model;
 
 namespace TestTask_T4.Data
@@ -25,6 +26,22 @@ namespace TestTask_T4.Data
                 .WithMany();
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        public override int SaveChanges()
+        {
+            this.SetCreatedAt();
+            this.SetUpdatedAt();
+
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            this.SetCreatedAt();
+            this.SetUpdatedAt();
+
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }
 }

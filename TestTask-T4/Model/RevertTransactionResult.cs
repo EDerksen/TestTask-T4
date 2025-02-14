@@ -1,8 +1,8 @@
 ﻿namespace TestTask_T4.Model
 {
-    public record TransactionResult
+    public record RevertTransactionResult
     {
-        public DateTime InsertDateTime { get; init; }
+        public DateTime RevertDateTime { get; init; }
         public decimal ClientBalance { get; init; }
     }
 }

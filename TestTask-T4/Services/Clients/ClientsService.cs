@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestTask_T4.Data;
+using TestTask_T4.Exceptions;
 using TestTask_T4.Model;
 
 namespace TestTask_T4.Services.Clients
@@ -8,23 +9,35 @@ namespace TestTask_T4.Services.Clients
     {
         private readonly ILogger<ClientsService> _logger;
         private readonly FinanceDbContext _dbContext;
+        private readonly TimeProvider _timeProvider;
 
-        public ClientsService(ILogger<ClientsService> logger, FinanceDbContext dbContext)
+        public ClientsService(ILogger<ClientsService> logger, FinanceDbContext dbContext, TimeProvider timeProvider)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _timeProvider = timeProvider;
         }
 
-        public Task<Client?> FindClient(Guid clientId, CancellationToken cancellationToken = default)
+        public async Task<ClientBalance> GetClientBalance(Guid clientId, CancellationToken cancellationToken = default)
         {
-            return _dbContext.Clients
+            var client = await _dbContext.Clients
                 .AsNoTracking()
                 .SingleOrDefaultAsync(c => c.Id == clientId, cancellationToken);
+            if(client == null)
+            {
+                throw new NotFoundException("Client not found", $"Can't found Client with id={clientId}");
+            }
+
+            return new ClientBalance()
+            {
+                Balance = client.Balance,
+                BalanceDateTime = _timeProvider.GetUtcNow().UtcDateTime
+            };
         }
 
         public async Task<Client> GetClientForUpdate(Guid clientId, CancellationToken cancellationToken = default)
         {
-            var existingClient = SelectClientForUpdate(clientId);
+            var existingClient = await SelectClientForUpdate(clientId);
             if(existingClient == null)
             {
                 var client = new Client()
@@ -41,11 +54,11 @@ namespace TestTask_T4.Services.Clients
             return existingClient;
         }
 
-        private Client? SelectClientForUpdate(Guid clientId)
+        private async Task<Client?> SelectClientForUpdate(Guid clientId, CancellationToken cancellationToken = default)
         {
-            return _dbContext.Clients
+            return await _dbContext.Clients
                 .FromSqlRaw($"SELECT * FROM \"{nameof(FinanceDbContext.Clients)}\" WHERE \"{nameof(Client.Id)}\" = @p0 FOR UPDATE", clientId)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

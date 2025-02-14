@@ -6,7 +6,7 @@
 - Блокировки реализованы с помощью транзакций и ``` SELECT ... FOR UPDATE ```
 - Откат транзакций реализован через создание новой транзакции с обратным эффектом 
 - При создании транзакциям добавляется BalanceSnapshot, чтобы хранить состояние баланса на случай повторного запроса
-- Валидация и обработка ошибок реализована с помощью атрибутов на контрактах и через исключения [TestTask-T4\Exceptions](TestTask-T4\Exceptions) и их обработку в middleware [TestTask-T4\Middleware\ExceptionHandlingMiddleware.cs](TestTask-T4\Middleware\ExceptionHandlingMiddleware.cs)
+- Валидация и обработка ошибок реализована с помощью атрибутов на контрактах и через исключения [TestTask-T4/Exceptions](TestTask-T4/Exceptions) и их обработку в middleware [TestTask-T4/Middleware/ExceptionHandlingMiddleware.cs](TestTask-T4/Middleware/ExceptionHandlingMiddleware.cs)
 
 Для удобства добавил в проект Aspire
 Для запуска потребуется Docker Desktop (из-за постгреса)
